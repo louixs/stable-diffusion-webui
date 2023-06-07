@@ -176,8 +176,8 @@ def get_cond(selected_path):
 def convsample_ddim(model, cond, steps, shape, eta=1.0, callback=None, normals_sequence=None,
                     mask=None, x0=None, quantize_x0=False, temperature=1., score_corrector=None,
                     corrector_kwargs=None, x_t=None
-                    ):
-    ddim = DDIMSampler(model)
+                    ):    
+    ddim = DDIMSampler(model, model.device)
     bs = shape[0]
     shape = shape[1:]
     print(f"Sampling with eta = {eta}; steps: {steps}")

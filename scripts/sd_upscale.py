@@ -93,7 +93,7 @@ class Script(scripts.Script):
             combined_image = images.combine_grid(grid)
             result_images.append(combined_image)
 
-            if opts.samples_save:
+            if not opts.samples_save and not p.do_not_save_samples:
                 images.save_image(combined_image, p.outpath_samples, "", start_seed, p.prompt, opts.samples_format, info=initial_info, p=p)
 
         processed = Processed(p, result_images, seed, initial_info)

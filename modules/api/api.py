@@ -31,7 +31,16 @@ from typing import Any
 import piexif
 import piexif.helper
 from contextlib import closing
+
 from modules.progress import create_task_id, add_task_to_queue, start_task, finish_task, current_task
+
+import asyncio
+
+def upscaler_to_index(name: str):
+    try:
+        return [x.name.lower() for x in shared.sd_upscalers].index(name.lower())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid upscaler, needs to be one of these: {' , '.join([x.name for x in shared.sd_upscalers])}") from e
 
 def script_name_to_index(name, scripts):
     try:
@@ -492,6 +501,15 @@ class Api:
     def img2imgapi(self, img2imgreq: models.StableDiffusionImg2ImgProcessingAPI):
         task_id = img2imgreq.force_task_id or create_task_id("img2img")
 
+        try:
+           loop = asyncio.get_event_loop()
+        except RuntimeError as e:
+           if str(e).startswith('There is no current event loop in thread'):
+               loop = asyncio.new_event_loop()
+               asyncio.set_event_loop(loop)
+           else:
+               raise
+
         init_images = img2imgreq.init_images
         if init_images is None:
             raise HTTPException(status_code=404, detail="Init image not found")
@@ -925,4 +943,3 @@ class Api:
     def stop_webui(request):
         shared.state.server_command = "stop"
         return Response("Stopping.")
-
