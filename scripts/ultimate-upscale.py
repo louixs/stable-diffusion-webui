@@ -559,10 +559,11 @@ class Script(scripts.Script):
             p.height = math.ceil((init_img.height * custom_scale) / 64) * 64
 
         # Upscaling
-        upscaler_index = [x.name.lower() for x in shared.sd_upscalers].index(upscaler_index.lower())        
+        print(f"upscaler_index {upscaler_index}")
+        # upscaler_index = [x.name.lower() for x in shared.sd_upscalers].index(upscaler_index.lower())
         upscaler = USDUpscaler(p, init_img, upscaler_index, save_upscaled_image, save_seams_fix_image, tile_width, tile_height)
         upscaler.upscale()
-        
+
         # Drawing
         upscaler.setup_redraw(redraw_mode, padding, mask_blur)
         upscaler.setup_seams_fix(seams_fix_padding, seams_fix_denoise, seams_fix_mask_blur, seams_fix_width, seams_fix_type)
@@ -572,4 +573,3 @@ class Script(scripts.Script):
         result_images = upscaler.result_images
 
         return Processed(p, result_images, seed, upscaler.initial_info if upscaler.initial_info is not None else "")
-
